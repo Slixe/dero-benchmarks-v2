@@ -67,6 +67,10 @@ export default {
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Questrial&family=Roboto&display=swap');
 
+* {
+  box-sizing: border-box;
+}
+
 #app {
   font-family: 'Questrial', sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -78,8 +82,7 @@ export default {
 html, body {
   padding: 0;
   margin: 0;
-  overflow-y: auto !important;
-  box-sizing: border-box;
+  overflow: hidden !important;
 }
 
 #center {
