@@ -82,7 +82,8 @@ export default {
 html, body {
   padding: 0;
   margin: 0;
-  overflow: hidden !important;
+  overflow: auto;
+  height: 100vh;
 }
 
 #center {
@@ -103,8 +104,12 @@ html, body {
   position: absolute;
   width: 100%;
   height: 100%;
-  max-height: 100vh;
-  max-width: 100vw;
+  max-height: 100%;
+  max-width: 100%;
+}
+
+.parallax canvas {
+  display: block;
 }
 
 #left-menu {
