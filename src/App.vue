@@ -12,7 +12,7 @@
   <div id="center">
     <div v-if="menu" id="left-menu">
       <div class="buttons">
-        <v-btn class="btn" v-for="item in navigations" :key="item.text" :to="item.to" elevation="1" text>{{ item.text }}</v-btn>
+        <v-btn class="btn" v-for="item in navigations" :key="item.text" :to="item.to" elevation="1" @click="menu = !menu" text>{{ item.text }}</v-btn>
       </div>
       <span>Slixe - {{ new Date().getFullYear() }}</span>
     </div>
@@ -31,6 +31,7 @@ import BackgroundParallax from './plugins/parallax/parallax.js'
 export default {
   data() {
     return {
+      parallax: {},
       menu: true,
       navigations: [
         {
@@ -53,8 +54,11 @@ export default {
     }
   },
   mounted() {
-    const parallax = new BackgroundParallax(this.$refs.background);
-    parallax.apply();
+    this.parallax = new BackgroundParallax(this.$refs.background);
+    this.parallax.apply();
+  },
+  updated() {
+    this.parallax.resize();
   },
   methods: {
     toggle() {
@@ -67,10 +71,6 @@ export default {
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Questrial&family=Roboto&display=swap');
 
-* {
-  box-sizing: border-box;
-}
-
 #app {
   font-family: 'Questrial', sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -82,7 +82,7 @@ export default {
 html, body {
   padding: 0;
   margin: 0;
-  overflow: hidden !important;
+  box-sizing: border-box;
 }
 
 #center {
@@ -101,10 +101,12 @@ html, body {
 
 .parallax {
   position: absolute;
-  width: 100%;
-  height: 100%;
-  max-height: 100vh;
-  max-width: 100vw;
+  min-width: 100%;
+  min-height: 100%;
+}
+
+.parallax canvas {
+  display: block;
 }
 
 #left-menu {
