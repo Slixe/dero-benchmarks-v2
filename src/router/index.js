@@ -19,7 +19,17 @@ const routes = [
     path: '/calculator',
     name: 'Calculator',
     component: () => import(/* webpackChunkName: "calculator" */ '../views/Calculator.vue')
-  }
+  },
+  {
+    path: '/admin/login',
+    name: 'Login',
+    component: () => import(/* webpackChunkName: "login" */ '../views/admin/Login.vue')
+  },
+  {
+    path: '/admin/unconfirmed-benchmarks',
+    name: 'Admin Panel',
+    component: () => import(/* webpackChunkName: "admin" */ '../views/admin/UBenchmarks.vue')
+  },
 ]
 
 const router = new VueRouter({

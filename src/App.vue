@@ -7,12 +7,12 @@
         <v-icon>mdi-menu</v-icon>
     </v-btn>
     <h1 class="mobile">DERO Benchmarks</h1>
-    <v-btn class="btn mobile" href="https://discord.gg/dero" target="_blank">Discord</v-btn>
+    <v-btn class="btn mobile" href="https://discord.gg/H95TJDp" target="_blank">Discord</v-btn>
   </div>
   <div id="center">
     <div v-if="menu" id="left-menu">
       <div class="buttons">
-        <v-btn class="btn" v-for="item in navigations" :key="item.text" :to="item.to" elevation="1" @click="menu = !menu" text>{{ item.text }}</v-btn>
+        <v-btn class="btn" v-for="item in navigations" :key="item.text" :to="item.to" elevation="1" @click="toggle" text>{{ item.text }}</v-btn>
       </div>
       <span>Slixe - {{ new Date().getFullYear() }}</span>
     </div>
@@ -26,12 +26,12 @@
 </template>
 
 <script>
-import BackgroundParallax from './plugins/parallax/parallax.js'
+//import BackgroundParallax from './plugins/parallax/parallax.js'
 
 export default {
   data() {
     return {
-      parallax: {},
+      //parallax: {},
       menu: true,
       navigations: [
         {
@@ -48,17 +48,17 @@ export default {
         },
         {
           text: "Admin Panel",
-          to: "/admin"
+          to: "/admin/login"
         },
       ]
     }
   },
   mounted() {
-    this.parallax = new BackgroundParallax(this.$refs.background);
-    this.parallax.apply();
+    //this.parallax = new BackgroundParallax(this.$refs.background);
+    //this.parallax.apply();
   },
   updated() {
-    this.parallax.resize();
+    //this.parallax.resize();
   },
   methods: {
     toggle() {
@@ -77,12 +77,20 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: white;
+  background-image: url('/background-dero.jpeg');
+  background-size: cover;
+}
+
+* { 
+  box-sizing: border-box;
 }
 
 html, body {
   padding: 0;
   margin: 0;
-  box-sizing: border-box;
+}
+
+html {
   overflow-y: auto !important;
 }
 
@@ -117,15 +125,15 @@ html, body {
   justify-content: space-between;
   width: 250px;
   padding: 6px;
-  border-right: 2px solid #202225;
-  background-color: #26282c82;
+  border-right: 2px solid #20222552;
+  background-color: #1d1e2059;
 }
 
 .btn {
   margin-bottom: 5px;
   border-radius: 4px;
-  background-color: #6641938f !important;
-  border-color: #4747488f !important;
+  background-color: #2938c98f !important;
+  border-color: #0a0a338f !important;
   color: white !important;
 }
 
@@ -175,19 +183,21 @@ html, body {
 }
 
 .theme--dark.v-card {
-  background-color: #1e1e1e54 !important;
+  background-color: #15141ba6 !important;
 }
 
 .theme--dark.v-data-table {
-  background-color: #1e1e1e00 !important;
+  background-color: #0d0c181c !important;
 }
 
 .theme--dark.v-data-table > .v-data-table__wrapper > table > tbody > tr:hover:not(.v-data-table__expanded__content):not(.v-data-table__empty-wrapper) {
-  background-color: #8544a14a !important;
+  background-color: #2e3baf44 !important;
 }
 
+
+
 .v-list-item--link:before {
-  background-color: #6d3187 !important;
+  background-color: #2938c98f !important;
 }
 
 .theme--light.v-sheet {

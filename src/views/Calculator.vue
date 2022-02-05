@@ -1,37 +1,21 @@
 <template>
 <v-card id="calculator" dark>
-    <v-card-title>
-        <span>Mining Reward Calculator</span>
-    </v-card-title>
+    <h2 class="bot">Mining Calculator</h2>
+    <v-divider style="margin: 20px;"></v-divider>
     <div class="content">
         <div>
             <v-text-field type="number" v-model="hashrate" label="Hashrate (h/s)" required></v-text-field>
-            <table class="table">
-                <tr>
-                    <th></th>
-                    <th>DERO</th>
-                    <th>USD</th>
-                    <th>BTC</th>
-                </tr>
-                <tr>
-                    <td><strong>Daily</strong></td>
-                    <td>{{ (rewards * 3600 * 24).toFixed(5) }}</td>
-                    <td>{{ (rewards * 3600 * 24 * this.priceUsd).toFixed(5) }}</td>
-                    <td>{{ (rewards * 3600 * 24 * this.priceBtc).toFixed(8) }}</td>
-                </tr>
-                <tr>
-                    <td><strong>Weekly</strong></td>
-                    <td>{{ (rewards * 3600 * 24 * 7).toFixed(5) }}</td>
-                    <td>{{ (rewards * 3600 * 24 * 7 * this.priceUsd).toFixed(5) }}</td> 
-                    <td>{{ (rewards * 3600 * 24 * 7 * this.priceBtc).toFixed(8) }}</td>
-                </tr>
-                <tr>
-                    <td><strong>Monthly</strong></td>
-                    <td>{{ (rewards * 3600 * 24 * 31).toFixed(5) }}</td>
-                    <td>{{ (rewards * 3600 * 24 * 31 * this.priceUsd).toFixed(5) }}</td>
-                    <td>{{ (rewards * 3600 * 24 * 31 * this.priceBtc).toFixed(8) }}</td>
-                </tr>
-            </table>
+            <v-data-table :headers="headers" :items="times" hide-default-footer disable-sort> <!-- TODO fix overflow -->
+                <template v-slot:item.dero="{ item }">
+                    <span>{{ (rewards * item.value).toFixed(5) }}</span>
+                </template>
+                <template v-slot:item.btc="{ item }">
+                    <span>{{ (rewards * item.value * priceBtc).toFixed(8) }}</span>
+                </template>
+                <template v-slot:item.usd="{ item }">
+                    <span>{{ (rewards * item.value * priceUsd).toFixed(2) }}</span>
+                </template>
+            </v-data-table>
         </div>
     </div>
 </v-card>
@@ -43,6 +27,42 @@ import { getInfo, loadBlock } from '../utils'
 export default {
     data() {
         return {
+            headers: [
+                {
+                    text: "",
+                    align: "start",
+                    value: "period"
+                },
+                {
+                    text: "DERO",
+                    align: "start",
+                    value: "dero"
+                },
+                {
+                    text: "BTC",
+                    align: "start",
+                    value: "btc"
+                },
+                {
+                    text: "USD",
+                    align: "start",
+                    value: "usd"
+                },
+            ],
+            times: [
+                {
+                    period: "Daily",
+                    value: 3600 * 24
+                },
+                {
+                    period: "Weekly",
+                    value: 3600 * 24 * 7
+                },
+                {
+                    period: "Monthly",
+                    value: 3600 * 24 * 31
+                }
+            ],
             hashrate: 0,
             reward: 0,
             difficulty: 0,

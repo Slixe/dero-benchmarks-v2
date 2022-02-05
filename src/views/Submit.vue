@@ -60,7 +60,7 @@ export default {
                     })
 
                     if (json.success) {
-                        setTimeout(() => this.$router.push("/"), 5000)
+                        setTimeout(() => this.$router.push("/"), 3000)
                     } else {
                         this.submitted = false
                     }
