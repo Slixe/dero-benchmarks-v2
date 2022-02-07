@@ -1,7 +1,7 @@
 <template>
 <v-app id="app" dark>
   <notifications group="notifications" position="bottom right" animation-type="velocity" :speed="500" />
-  <div class="parallax" :data-image-original="require('./assets/background.png')" :data-image-depth="require('./assets/background-depth.jpg')" data-horizontal-threshold="35" data-vertical-threshold="15" ref="background"></div>
+  <div class="parallax" data-horizontal-threshold="35" data-vertical-threshold="15" ref="background"></div>
   <div id="nav">
     <v-btn class="btn" @click="toggle" text>
         <v-icon>mdi-menu</v-icon>
