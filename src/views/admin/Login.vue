@@ -1,9 +1,9 @@
 <template>
 <div>
-    <v-card class="center elevation-5">
+    <v-card dark class="center elevation-5">
         <v-form v-model="valid">
-            <v-text-field v-model="username" :counter="16" label="Username" required></v-text-field>
-            <v-text-field v-model="password" type="password" :counter="64" label="Password" required></v-text-field>
+            <v-text-field dark v-model="username" :counter="16" label="Username" required></v-text-field>
+            <v-text-field dark v-model="password" type="password" :counter="64" label="Password" required></v-text-field>
             <v-btn @click="login()" color="blue">Login</v-btn>
         </v-form>
     </v-card>
