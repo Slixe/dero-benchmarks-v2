@@ -83,27 +83,33 @@ export default {
             priceBtc: 0
         }
     },
-    async mounted() {
+    mounted() {
         let format = localStorage.getItem('hashFormat');
         if (format != null) {
             this.format = format;
         }
-
-        let info = await getInfo()
-        let gecko = await fetch("https://api.coingecko.com/api/v3/coins/dero?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false").then(res => res.json())
-
-        this.difficulty = info.difficulty;
-        this.reward = 0.6150; // hardcoded current block reward
-        this.targetBlockTime = info.target;
-        this.priceUsd = gecko.market_data.current_price.usd;
-        this.priceBtc = gecko.market_data.current_price.btc;
+        this.updateInfo();
     },
     computed: {
         rewards() {
             return ((this.formatHashrate(this.hashrate) * this.reward) / (this.difficulty + parseInt(this.hashrate))) * (1 - (this.poolFee / 100)) / this.targetBlockTime;
         }
     },
-    methods: {
+    methods: {                                                                                                                                                                                                                                                                                                                                                                              
+        async updateInfo() {
+            let info = await getInfo()
+            let gecko = await fetch("https://api.coingecko.com/api/v3/coins/dero?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false").then(res => res.json())
+
+            this.difficulty = info.difficulty;
+            this.reward = 0.6150; // hardcoded current block reward
+            this.targetBlockTime = info.target;
+            this.priceUsd = gecko.market_data.current_price.usd;
+            this.priceBtc = gecko.market_data.current_price.btc;
+
+            setInterval(() => {
+                this.updateInfo();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+            }, 18);                                                                                                                                                                 
+        },
         onFormatChange(e) {
             localStorage.setItem('hashFormat', e);
         },
