@@ -4,7 +4,10 @@
     <v-divider style="margin: 20px;"></v-divider>
     <div class="content">
         <div>
-            <v-text-field type="number" v-model="hashrate" label="Hashrate (h/s)" required></v-text-field>
+            <div class="hash">
+                <v-text-field type="number" v-model="hashrate" label="Hashrate" required></v-text-field>
+                <v-select :items="formats" @change="onFormatChange" class="format" v-model="format" required></v-select>
+            </div>
             <v-data-table :headers="headers" :items="times" hide-default-footer disable-sort> <!-- TODO fix overflow -->
                 <template v-slot:item.dero="{ item }">
                     <span>{{ (rewards * item.value).toFixed(5) }}</span>
@@ -20,8 +23,9 @@
     </div>
     <v-divider style="margin: 20px;"></v-divider>
     <div class="infos">
-        <!--<span>Network hashrate: {{ this.difficulty }}</span>-->
+        <span>Network hashrate: {{ netHash(this.difficulty) }}</span>
         <span>Block Reward: {{ this.reward }} DERO</span>
+        <span>Block Time: {{ this.targetBlockTime }}s</span>
     </div>
 </v-card>
 </template>
@@ -32,6 +36,8 @@ import { getInfo } from '../utils'
 export default {
     data() {
         return {
+            format: "H/s",
+            formats: ['H/s', 'KH/s', 'MH/s', 'GH/s', 'TH/s'],
             headers: [
                 {
                     text: "",
@@ -70,6 +76,7 @@ export default {
             ],
             hashrate: 0,
             reward: 0,
+            targetBlockTime: 18,
             difficulty: 0,
             poolFee: 0,
             priceUsd: 0,
@@ -77,17 +84,46 @@ export default {
         }
     },
     async mounted() {
+        let format = localStorage.getItem('hashFormat');
+        if (format != null) {
+            this.format = format;
+        }
+
         let info = await getInfo()
         let gecko = await fetch("https://api.coingecko.com/api/v3/coins/dero?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false").then(res => res.json())
 
-        this.difficulty = info.difficulty * 19; // last mini block require difficulty * 9 + 10 mini blocks at normal diff
+        this.difficulty = info.difficulty;
         this.reward = 0.6150; // hardcoded current block reward
-        this.priceUsd = gecko.market_data.current_price.usd
-        this.priceBtc = gecko.market_data.current_price.btc
+        this.targetBlockTime = info.target;
+        this.priceUsd = gecko.market_data.current_price.usd;
+        this.priceBtc = gecko.market_data.current_price.btc;
     },
     computed: {
         rewards() {
-            return ((this.hashrate * this.reward) / (this.difficulty)) * (1 - (this.poolFee / 100));
+            return ((this.formatHashrate(this.hashrate) * this.reward) / (this.difficulty + parseInt(this.hashrate))) * (1 - (this.poolFee / 100)) / this.targetBlockTime;
+        }
+    },
+    methods: {
+        onFormatChange(e) {
+            localStorage.setItem('hashFormat', e);
+        },
+        formatHashrate(hashrate) {
+            let i = 1;
+            for (let f of this.formats) {
+                if (this.format == f) {
+                    break;
+                }
+                i *= 1000;
+            }
+            return hashrate * i;
+        },
+        netHash(diff) {
+            let i = 0
+            while (i < this.formats.length && diff > 1000) {
+                diff /= 1000;
+                i += 1;
+            }
+            return diff.toFixed(2) + " " + this.formats[i];
         }
     }
 }
@@ -99,6 +135,15 @@ export default {
     width: 100%;
     max-width: 750px;
     margin: auto;
+}
+
+.hash {
+    display: flex;
+}
+
+.format {
+    max-width: 80px;
+    min-width: 45px;
 }
 
 .content {
