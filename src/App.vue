@@ -1,5 +1,5 @@
 <template>
-<v-app id="app" dark>
+<v-app id="app">
   <notifications group="notifications" position="bottom right" animation-type="velocity" :speed="500" />
   <div class="parallax" data-horizontal-threshold="35" data-vertical-threshold="15" ref="background"></div>
   <div id="nav">

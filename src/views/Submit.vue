@@ -5,7 +5,7 @@
     <v-form class="submit-form" v-model="valid">
         <div class="panels">
             <div>
-                <v-text-field class="text-field" v-model="vendor" autocomplete="vendor" label="Vendor" required></v-text-field>
+                <v-select class="text-field" :items="vendors" label="Vendor" v-model="vendor" required></v-select>
                 <v-text-field class="text-field" v-model="model" autocomplete="model" label="Model" required></v-text-field>
                 <v-text-field class="text-field" v-model="memory" autocomplete="memory" label="Memory" required></v-text-field>
             </div>
@@ -25,6 +25,7 @@
 export default {
     data() {
         return {
+            vendors: ["INTEL", "AMD", "NVIDIA", "ARM", "OTHER"],
             valid: false,
             vendor: "",
             model: "",

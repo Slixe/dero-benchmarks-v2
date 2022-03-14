@@ -18,11 +18,16 @@
             </v-data-table>
         </div>
     </div>
+    <v-divider style="margin: 20px;"></v-divider>
+    <div class="infos">
+        <!--<span>Network hashrate: {{ this.difficulty }}</span>-->
+        <span>Block Reward: {{ this.reward }} DERO</span>
+    </div>
 </v-card>
 </template>
 
 <script>
-import { getInfo, loadBlock } from '../utils'
+import { getInfo } from '../utils'
 
 export default {
     data() {
@@ -66,24 +71,23 @@ export default {
             hashrate: 0,
             reward: 0,
             difficulty: 0,
-            poolFee: 1,
+            poolFee: 0,
             priceUsd: 0,
             priceBtc: 0
         }
     },
     async mounted() {
         let info = await getInfo()
-        let block = await loadBlock(info.top_block_hash)
         let gecko = await fetch("https://api.coingecko.com/api/v3/coins/dero?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false").then(res => res.json())
 
-        this.difficulty = info.difficulty
-        this.reward = (block.block_header.reward) / Math.pow(10, 12)
+        this.difficulty = info.difficulty * 19; // last mini block require difficulty * 9 + 10 mini blocks at normal diff
+        this.reward = 0.6150; // hardcoded current block reward
         this.priceUsd = gecko.market_data.current_price.usd
         this.priceBtc = gecko.market_data.current_price.btc
     },
     computed: {
         rewards() {
-            return ((this.hashrate * this.reward) / this.difficulty) * (1 - (this.poolFee / 100));
+            return ((this.hashrate * this.reward) / (this.difficulty)) * (1 - (this.poolFee / 100));
         }
     }
 }
@@ -114,5 +118,10 @@ export default {
 
 .table td {
     width: 100px;
+}
+
+.infos {
+    display: flex;
+    flex-direction: column;
 }
 </style>
