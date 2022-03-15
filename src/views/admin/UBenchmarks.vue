@@ -10,6 +10,9 @@
             <template v-slot:item.timestamp="{ item }">
                 <span>{{ new Date(item.timestamp).toLocaleDateString() }}</span>
             </template>
+            <template v-slot:item.hashrate="{ item }">
+                <span>{{ utils.fromHash(item.hashrate) }}</span>
+            </template>
         </v-data-table>
         <div class="buttons">
             <v-btn @click="update(false)" color="red">Delete</v-btn>
@@ -20,9 +23,12 @@
 </template>
 
 <script>
+import * as utils from '../../utils'
+
 export default {
     data() {
         return {
+            utils,
             loading: true,
             search: "",
             selected: [],
