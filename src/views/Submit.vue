@@ -4,13 +4,16 @@
     <v-divider style="margin: 20px;"></v-divider>
     <v-form class="submit-form" v-model="valid">
         <div class="panels">
-            <div>
+            <div class="part">
                 <v-select class="text-field" :items="vendors" label="Vendor" v-model="vendor" required></v-select>
                 <v-text-field class="text-field" v-model="model" autocomplete="model" label="Model" required></v-text-field>
                 <v-text-field class="text-field" v-model="memory" autocomplete="memory" label="Memory" required></v-text-field>
             </div>
-            <div>
-                <v-text-field class="text-field" v-model="hashrate" autocomplete="hashrate" label="Hashrate" required></v-text-field>
+            <div class="part">
+                <div class="hash">
+                    <v-text-field class="text-field" v-model="hashrate" autocomplete="hashrate" label="Hashrate" required></v-text-field>
+                    <v-select :items="formats" @change="onFormatChange" class="format" v-model="format" required></v-select>
+                </div>
                 <v-text-field class="text-field" v-model="watts" autocomplete="watts" label="Watts" required></v-text-field>
                 <v-text-field class="text-field" v-model="miner" autocomplete="miner" label="Miner" required></v-text-field>
             </div>
@@ -22,9 +25,13 @@
 </template>
 
 <script>
+import * as utils from '../utils'
+
 export default {
     data() {
         return {
+            format: utils.getHashFormat(),
+            formats: utils.HASH_FORMATS,
             vendors: ["INTEL", "AMD", "NVIDIA", "ARM", "OTHER"],
             valid: false,
             vendor: "",
@@ -38,6 +45,9 @@ export default {
         }
     },
     methods: {
+        onFormatChange(e) {
+            utils.setHashFormat(e);
+        },
         submit() {
             if (!this.submitted && this.valid) {
                 this.submitted = true
@@ -47,7 +57,7 @@ export default {
                         vendor: this.vendor.toUpperCase(),
                         model: this.model,
                         memory: this.memory,
-                        hashrate: this.hashrate,
+                        hashrate: utils.formatHashrate(this.hashrate),
                         watts: this.watts,
                         minerVersion: this.miner,
                         owner: this.user
@@ -95,6 +105,23 @@ export default {
     justify-content: space-around;
 }
 
+.panels .part {
+    width: 30%;
+}
+
+.hash {
+    display: flex;
+}
+
+.hash .text-field {
+    min-width: auto;
+}
+
+.format {
+    max-width: 80px;
+    min-width: 50px;
+}
+
 .submit-form {
     padding: 2%;
 }
@@ -107,10 +134,6 @@ export default {
     width: 25%;
     min-width: 150px;
     margin: auto;
-}
-
-.panels div {
-    width: 30%;
 }
 
 @media (max-width: 600px) {

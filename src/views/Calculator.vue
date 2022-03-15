@@ -23,7 +23,7 @@
     </div>
     <v-divider style="margin: 20px;"></v-divider>
     <div class="infos">
-        <span>Network hashrate: {{ netHash(this.difficulty) }}</span>
+        <span>Network hashrate: {{ utils.fromHash(this.difficulty) }}</span>
         <span>Block Reward: {{ this.reward }} DERO</span>
         <span>Block Time: {{ this.targetBlockTime }}s</span>
     </div>
@@ -31,13 +31,14 @@
 </template>
 
 <script>
-import { getInfo } from '../utils'
+import * as utils from '../utils'
 
 export default {
     data() {
         return {
-            format: "H/s",
-            formats: ['H/s', 'KH/s', 'MH/s', 'GH/s', 'TH/s'],
+            utils,
+            format: utils.getHashFormat(),
+            formats: utils.HASH_FORMATS,
             headers: [
                 {
                     text: "",
@@ -84,52 +85,26 @@ export default {
         }
     },
     mounted() {
-        let format = localStorage.getItem('hashFormat');
-        if (format != null) {
-            this.format = format;
-        }
         this.updateInfo();
     },
     computed: {
         rewards() {
-            return ((this.formatHashrate(this.hashrate) * this.reward) / (this.difficulty + parseInt(this.hashrate))) * (1 - (this.poolFee / 100)) / this.targetBlockTime;
+            return ((utils.formatHashrate(parseInt(this.hashrate)) * this.reward) / (this.difficulty + parseInt(this.hashrate))) * (1 - (this.poolFee / 100)) / this.targetBlockTime;
         }
     },
-    methods: {                                                                                                                                                                                                                                                                                                                                                                              
+    methods: {                                                                                                                                                                                                                                                                                            
         async updateInfo() {
-            let info = await getInfo()
+            let info = await utils.getInfo()
             let gecko = await fetch("https://api.coingecko.com/api/v3/coins/dero?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false").then(res => res.json())
 
             this.difficulty = info.difficulty;
             this.reward = 0.6150; // hardcoded current block reward
             this.targetBlockTime = info.target;
             this.priceUsd = gecko.market_data.current_price.usd;
-            this.priceBtc = gecko.market_data.current_price.btc;
-
-            setInterval(() => {
-                this.updateInfo();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
-            }, 18);                                                                                                                                                                 
+            this.priceBtc = gecko.market_data.current_price.btc;                                                                                                                                                  
         },
         onFormatChange(e) {
-            localStorage.setItem('hashFormat', e);
-        },
-        formatHashrate(hashrate) {
-            let i = 1;
-            for (let f of this.formats) {
-                if (this.format == f) {
-                    break;
-                }
-                i *= 1000;
-            }
-            return hashrate * i;
-        },
-        netHash(diff) {
-            let i = 0
-            while (i < this.formats.length && diff > 1000) {
-                diff /= 1000;
-                i += 1;
-            }
-            return diff.toFixed(2) + " " + this.formats[i];
+            utils.setHashFormat(e);
         }
     }
 }
