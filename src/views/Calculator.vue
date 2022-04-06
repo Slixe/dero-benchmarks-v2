@@ -6,7 +6,7 @@
         <div>
             <div class="hash">
                 <v-text-field type="number" v-model="hashrate" label="Hashrate" required></v-text-field>
-                <v-select :items="formats" @change="onFormatChange" class="format" v-model="format" required></v-select>
+                <v-select :items="utils.HASH_FORMATS" @change="onFormatChange" class="format" :value="utils.getHashFormat()" required></v-select>
             </div>
             <v-data-table :headers="headers" :items="times" hide-default-footer disable-sort> <!-- TODO fix overflow -->
                 <template v-slot:item.dero="{ item }">
@@ -37,8 +37,6 @@ export default {
     data() {
         return {
             utils,
-            format: utils.getHashFormat(),
-            formats: utils.HASH_FORMATS,
             headers: [
                 {
                     text: "",
@@ -89,7 +87,7 @@ export default {
     },
     computed: {
         rewards() {
-            return ((utils.formatHashrate(parseInt(this.hashrate)) * this.reward) / (this.difficulty + parseInt(this.hashrate))) * (1 - (this.poolFee / 100)) / this.targetBlockTime;
+            return ((utils.formatHashrate(parseFloat(this.hashrate)) * this.reward) / (this.difficulty + parseFloat(this.hashrate))) * (1 - (this.poolFee / 100)) / this.targetBlockTime;
         }
     },
     methods: {                                                                                                                                                                                                                                                                                            
@@ -105,6 +103,9 @@ export default {
         },
         onFormatChange(e) {
             utils.setHashFormat(e);
+            let old = this.hashrate; // i'm scared of this code...
+            this.hashrate = 0; // (update value to update the computed)
+            this.hashrate = old;
         }
     }
 }
