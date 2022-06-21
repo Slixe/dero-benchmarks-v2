@@ -83,7 +83,7 @@ export default {
         }
     },
     mounted() {
-        this.updateInfo();
+        setInterval(this.updateInfo, this.targetBlockTime * 1000); // every 18s
     },
     computed: {
         rewards() {
@@ -99,7 +99,13 @@ export default {
             this.reward = 0.6150; // hardcoded current block reward
             this.targetBlockTime = info.target;
             this.priceUsd = gecko.market_data.current_price.usd;
-            this.priceBtc = gecko.market_data.current_price.btc;                                                                                                                                                  
+            this.priceBtc = gecko.market_data.current_price.btc;
+            this.$notify({
+                group: 'notifications',
+                type: 'success',
+                title: 'Network Updated',
+                text: ''
+            })
         },
         onFormatChange(e) {
             utils.setHashFormat(e);
