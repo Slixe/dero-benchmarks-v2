@@ -83,6 +83,7 @@ export default {
         }
     },
     mounted() {
+        this.updateInfo(false);
         setInterval(this.updateInfo, this.targetBlockTime * 1000); // every 18s
     },
     computed: {
@@ -91,7 +92,7 @@ export default {
         }
     },
     methods: {                                                                                                                                                                                                                                                                                            
-        async updateInfo() {
+        async updateInfo(notify=true) {
             let info = await utils.getInfo()
             let gecko = await fetch("https://api.coingecko.com/api/v3/coins/dero?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false").then(res => res.json())
 
@@ -100,12 +101,14 @@ export default {
             this.targetBlockTime = info.target;
             this.priceUsd = gecko.market_data.current_price.usd;
             this.priceBtc = gecko.market_data.current_price.btc;
-            this.$notify({
-                group: 'notifications',
-                type: 'success',
-                title: 'Network Updated',
-                text: ''
-            })
+            if (notify) {
+                this.$notify({
+                    group: 'notifications',
+                    type: 'success',
+                    title: 'Network Updated',
+                    text: ''
+                })
+            }
         },
         onFormatChange(e) {
             utils.setHashFormat(e);
